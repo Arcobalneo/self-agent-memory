@@ -6,11 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dotenv>=0.9.9",
+    "jieba>=0.42.1",
     "kuzu>=0.11.0",
     "langchain-community>=0.3.27",
     "langchain-kuzu>=0.4.2",
     "langchain-openai>=0.3.28",
     "langgraph>=0.5.3",
+    "networkx>=3.5",
+    "pyvis>=0.3.2",
+    "rank-bm25>=0.2.2",
 ]
 
 [[tool.uv.index]]
