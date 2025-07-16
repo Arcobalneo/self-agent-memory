@@ -5,8 +5,10 @@ build/
 dist/
 wheels/
 db_cache/*
+benchmark_cache/*
 *.egg-info
 
 # Virtual environments
 .venv
 .env
+benchmark_case/hf_download.py

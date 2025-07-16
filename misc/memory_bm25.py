@@ -109,6 +109,8 @@ class BM25MemoryStore:
         self.tokenized_corpus = [self._tokenize_text("初始化记忆")]
         self.bm25 = BM25Okapi(self.tokenized_corpus)
         print("初始化空记忆检索器")
+        # 立即保存初始记忆
+        self._save_memories()
 
     def _save_memories(self):
         """保存记忆到文件"""
@@ -243,7 +245,7 @@ class MemorySaveTool(BaseTool):
 
     name: ClassVar[str] = "save_memory"
     description: ClassVar[str] = "保存信息到记忆库中以便将来检索。输入应该是记忆内容。"
-    memory_store: BM25MemoryStore = Field(default_factory=BM25MemoryStore)
+    memory_store: BM25MemoryStore
 
     def _run(self, content: str) -> str:
         """保存记忆
@@ -266,7 +268,7 @@ class MemoryRetrieveTool(BaseTool):
 
     name: ClassVar[str] = "retrieve_memories"
     description: ClassVar[str] = "检索与查询相关的记忆。输入应该是查询字符串。"
-    memory_store: BM25MemoryStore = Field(default_factory=BM25MemoryStore)
+    memory_store: BM25MemoryStore
 
     def _run(self, query: str, limit: int = 5) -> str:
         """检索相关记忆
@@ -325,7 +327,7 @@ def test_memory_bm25_basic():
     print("\n=== 开始基本BM25记忆功能测试 ===")
 
     # 创建测试目录并确保测试环境干净
-    test_dir = "db_cache/test_basic"
+    test_dir = "/mnt/data/gyzou/expr_workplace/self-agent-memory/db_cache/bm25_txt"
     if os.path.exists(test_dir):
         shutil.rmtree(test_dir)
 
@@ -381,20 +383,6 @@ def test_memory_bm25_basic():
     print(f"检索到 {len(memories)} 条关于'AI'的相关记忆")
     for memory in memories:
         print(f"- {memory['content']}")
-
-    # 测试空查询
-    print("\n测试空查询:")
-    memories = memory_store.retrieve_relevant_memories("")
-    print(f"空查询检索到 {len(memories)} 条记忆")
-
-    # 测试通过ID获取记忆
-    memory = memory_store.get_memory_by_id(memory_id1)
-    print(f"\n通过ID获取记忆: {memory['content']}")
-
-    # 清除所有记忆
-    memory_store.clear_all_memories()
-    memories = memory_store.retrieve_relevant_memories("水果")
-    print(f"\n清除后检索到 {len(memories)} 条记忆")
 
     print("=== 基本BM25记忆功能测试完成 ===\n")
 
